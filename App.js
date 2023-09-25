@@ -7,15 +7,16 @@ import {
   TextInput,
   View,
   FlatList,
+  StatusBar,
 } from "react-native";
 import GoalItem from "./GoalItem";
 import GoalInput from "./GoalInput";
 
 export default function App() {
   const [goals, setGoals] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   // const [editedGoal, setEditedGoal] = useState("");
   function addGoalHandler(goaltext, setGoalText) {
-
     setGoals((currentGoals) => [...currentGoals, goaltext]);
     setGoalText("");
   }
@@ -28,31 +29,39 @@ export default function App() {
   // }
 
   function deleteGoalHandler(index) {
-    setGoals(goals.filter((ele,i) => i !== index))
+    setGoals(goals.filter((ele, i) => i !== index));
   }
   console.log(goals);
 
+  function startAddGoalHandler() {
+    setIsModalVisible(true);
+  }
+  function closeHandler() {
+    setIsModalVisible(false);
+  }
+  console.log(isModalVisible);
   return (
-    <View style={styles.appContainer}>
-      <GoalInput
-        onAddGoal={addGoalHandler}
-        // editGoal={editGoalHandler}
-        // editedGoal={editedGoal}
-      />
-      <View style={styles.goalContainer}>
-        <FlatList
-          data={goals}
-          keyExtractor={(item) => item.id}
-          renderItem={(itemData) => (
-            <GoalItem
-              text={itemData.item}
-              // edGoal={() => editGoalHandler(item.id)}
-              delGoal={() => deleteGoalHandler(itemData.index)}
-            />
-          )}
+      <View style={styles.appContainer}>
+        <Button title="add new goal" onPress={startAddGoalHandler} />
+        <GoalInput
+          visible={isModalVisible}
+          onAddGoal={addGoalHandler}
+          onClose={closeHandler}
         />
+        <View style={styles.goalContainer}>
+          
+          <FlatList
+            data={goals}
+            renderItem={(itemData) => (
+              <GoalItem
+                text={itemData.item}
+                // edGoal={() => editGoalHandler(item.id)}
+                delGoal={() => deleteGoalHandler(itemData.index)}
+              />
+            )}
+          />
+        </View>
       </View>
-    </View>
   );
 
   // const [background,setBackground] = useState(null);
